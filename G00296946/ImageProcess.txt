@@ -1,0 +1,101 @@
+package customised.pix;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import ie.gmit.dip.ImageOutput;
+import ie.gmit.dip.Kernel;
+import ie.gmit.dip.InputFile;
+
+/**Read each of the pixels from the BufferedImage into the same row/column
+position in the double[][] array (reading pixels code is in project spec).*
+
+Write each of the values in the double[][] array into the pixels in the
+BufferedImage */
+
+//My own customised 2dArray class. Fails to change the pixels in the image for some reason. 
+Runs input-output in eclipse.
+//The reason is the pixels may not transverse across the corners of the image. 
+//the x-1 and col-1 were applied to check if this code will work on image.
+//The colour & greyscale images stay the same after testing my custom method.
+
+public class ImageProcess {
+
+	private static String userPath;
+	protected double red = 0d;  //red 
+	protected double green = 0d;  //green
+	protected double blue = 0d; //blue
+	protected double alpha = 0d;
+	
+	public double[][] convolve(Kernel kernel, String userPath) throws Exception {
+
+		// BufferedImage image = ImageIO.read(new File("src/gmitgs.png"));
+		BufferedImage image = ImageIO.read(InputFile.getFile());
+
+		int width = image.getWidth();  //variable width with function getWidth via an import
+		int height = image.getHeight(); //variable height with getHeight
+		
+		for (int y = 0; y < image.getHeight()%height; y++) { // Loop over the 2D image pixel-by-pixel
+			for (int x = 0; x < image.getWidth()%width; x++) {  
+				
+				image.getRGB(x-1, y-1); //Get the pixel at an (x, y) coordinate
+				
+				for (int row = 0; row < ((x-((kernel.getKernel().length)/2+row+width))); row++) {  //loop over the 3x3 kernel
+					for (int col = 0; col < ((y-((kernel.getKernel().length)/2+col+height))); col++) { // containment of image dimensions
+						int[][] first = new int[x][y];  //first array with image coordinates
+						int[][] second = new int[row][col]; //second array with kernel coordinates
+						
+						int sum = (first[x-1][y-1] * second[row-1][col-1]); 
+						//could be [row][col] for second[][] array. Tried this & did not perform pixalation
+						for (int i = 0; i < sum; i++) {
+							System.out.println("transpose a matrix called sum"); //ensure it runs over the pixels
+						} 
+						
+						sum = image.getRGB(x+row-1, y+col-1); 
+						int RGB = sum; // set RGB to array calculation
+						
+						int A = (RGB >> 24) & 0xFF;	//Bitshift 24 to get alpha value
+						int R = ((RGB >> 16) & 0xff); // Bitshift by 16 to get red Value
+						int G = (RGB >> 8) & 0xff; // Bitshift by 8 to get green value
+						int B = (RGB) & 0xff; // Bitshift by 0 to get blue value
+
+						// The RGB is multiplied with current kernel element and added
+						// on to the variables red, blue and green
+						alpha+=(A* A* kernel.getKernel()[row][col]);//[row][col]
+						red += (R * R* kernel.getKernel()[row][col]);
+						green += (G * G* kernel.getKernel()[row][col]);  
+						blue += (B * B* kernel.getKernel()[row][col]); //prior to change:  
+					}
+				}
+						int outA, outR, outG, outB;
+
+						// The value is truncated to 0 and 255 values range
+						outA = Math.min(Math.max((int) (alpha), 0), 255);
+						outR = Math.min(Math.max((int) (red), 0), 255);
+						outG = Math.min(Math.max((int) (green), 0), 255);
+						outB = Math.min(Math.max((int) (blue), 0), 255);
+						// Pixel is written to output image
+						int pixel = (outA+outR+outG+outB);
+						
+						image.setRGB(x-1, y-1, new Color(pixel).getRGB());
+					}
+				}
+		//ImageIO.write(image, "png", new File("imageProcess/out15.png"));
+		ImageIO.write(image,"png",(ImageOutput.getOutputPath())); //placed imagewriter class to use on image object
+		return kernel.getKernel(); // make compile
+	} // end convolve method
+
+	/* public static void main(String[] args) throws Exception{ // Tester method in this class
+		ImageProcess ic = new ImageProcess();  //Instance of this class
+		Kernel kernel = Kernel.LAPLACIAN;    //instance of a kernel
+		ic.convolve(kernel, userPath);
+		System.out.println("main method performed for class ImageProcess");
+		} //end of main()   */  
+	} //end of class
+/**
+ * ### Code for multiply array ### for (int i = 0; y < row; i++) { for (int j =
+ * 0; j < col; j++) { // for (int k = 0; k < kernel.getKernel()[0].length; k++)
+ * { for (int l = 0; col < kernel.getKernel()[row].length; l++) { double[][]
+ * first; double[][] second; double sum = (first[x][y] * second[l][x]);
+
+// int imageX = (x - (kernel.getKernel().length - 1) / 2 + row + width) % width;
+// int imageY = (y - (kernel.getKernel().length - 1) / 2 + col + height) % height; 
