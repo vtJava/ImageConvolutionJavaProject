@@ -5,6 +5,7 @@ G00296946 Valery Taustsiakou ReadMe.txt File of Image Filtering 2D Application:
 The main referenece applied was Tech.abdulfatir.com
 Operating system is Windows 10. 
 Eclipse Version used: Version Jdk 15
+This program works as a command line application. 
 
 Overview of the app design:
 The application works is built with a primary menu and a larger filterMenu of kernels.
