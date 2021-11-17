@@ -1,5 +1,5 @@
-# ImageConvolutionJavaProject
-GMIT Project in applying 3x3 filters over an image
+# ImageConvolutionJava
+Project in applying 3x3 filters over an image
 
 G00296946 Valery Taustsiakou ReadMe.txt File of Image Filtering 2D Application:
 The main referenece applied was Tech.abdulfatir.com
